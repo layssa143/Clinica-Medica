@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Clinica.Interfaces
 {
-    internal class IRelatorio
+    public interface IRelatorio
     {
+        string GerarResumo();
     }
 }
