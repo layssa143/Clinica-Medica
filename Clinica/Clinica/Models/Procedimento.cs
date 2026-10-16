@@ -16,13 +16,9 @@ namespace Clinica.Models
             Valor = valor;
         }
 
-        // Método exigido pela interface ICloneable.
         public object Clone()
         {
-            return new Procedimento(
-                Nome,
-                Valor
-            );
+            return MemberwiseClone();
         }
     }
 }
