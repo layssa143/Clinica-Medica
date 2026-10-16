@@ -1,8 +1,11 @@
 ﻿using System;
+using Clinica.Interfaces;
 
 namespace Clinica.Models
 {
-    public class Procedimento : ICloneable
+    public class Procedimento :
+        ICloneable,
+        IPrototipo<Procedimento>
     {
         public string Nome { get; set; }
 
@@ -16,9 +19,16 @@ namespace Clinica.Models
             Valor = valor;
         }
 
+        // Implementação do ICloneable.
         public object Clone()
         {
             return MemberwiseClone();
+        }
+
+        // Implementação da interface genérica.
+        public Procedimento Clonar()
+        {
+            return (Procedimento)Clone();
         }
     }
 }

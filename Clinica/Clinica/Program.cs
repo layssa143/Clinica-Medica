@@ -55,13 +55,7 @@ var medico2 = new Medico(
 clinica.CadastrarMedico(medico1);
 clinica.CadastrarMedico(medico2);
 
-// ==================================================
-// EXIBIÇÃO DOS CADASTROS
-// ==================================================
-
-Console.WriteLine(
-    "--- Cadastros Realizados ---"
-);
+Console.WriteLine("--- Cadastros Realizados ---");
 
 paciente1.ExibirFicha();
 medico1.ExibirFicha();
@@ -70,9 +64,7 @@ medico1.ExibirFicha();
 // AGENDAMENTO DE CONSULTAS
 // ==================================================
 
-Console.WriteLine(
-    "\n--- Agendamentos ---"
-);
+Console.WriteLine("\n--- Agendamentos ---");
 
 clinica.AgendarConsulta(
     101,
@@ -108,25 +100,22 @@ consultaParaCancelar?.Cancelar();
 clinica.ExibirRelatorioGeral();
 
 // ==================================================
-// IMPLEMENTAÇÃO DO PROTOTYPE
+// PROTOTYPE - CRIAÇÃO DO MODELO
 // ==================================================
 
 Console.WriteLine(
     "\n=== PROTOTYPE: PACOTES DE EXAMES ==="
 );
 
-// Cria o gerenciador de protótipos.
 var gerenciador =
     new GerenciadorPrototipos();
 
-// Cria o pacote que será usado como modelo.
 var checkupCardio =
     new PacoteExame(
         "Check-up Cardiológico",
         "Jejum de 8h e evitar cafeína"
     );
 
-// Adiciona procedimentos ao modelo.
 checkupCardio.AdicionarProcedimento(
     new Procedimento(
         "Eletrocardiograma",
@@ -141,25 +130,24 @@ checkupCardio.AdicionarProcedimento(
     )
 );
 
-// Cadastra o pacote no catálogo.
+// Cadastra o pacote original no registro de protótipos.
 gerenciador.CadastrarPrototipo(
     "CARDIO_PADRAO",
     checkupCardio
 );
 
-// Exibe o modelo original.
 Console.WriteLine(
-    "\n--- Modelo Base ---"
+    "\n--- Modelo Original ---"
 );
 
 checkupCardio.ExibirResumo();
 
 // ==================================================
-// TESTE DA CÓPIA PROFUNDA
+// CÓPIA PROFUNDA PELO GERENCIADOR
 // ==================================================
 
 Console.WriteLine(
-    "\n--- Cópia Profunda ---"
+    "\n--- Cópia Profunda pelo Gerenciador ---"
 );
 
 var atendimentoCarlos =
@@ -182,19 +170,87 @@ if (atendimentoCarlos != null)
     atendimentoCarlos.ExibirResumo();
 }
 
-// Confirma que o modelo original não mudou.
 Console.WriteLine(
-    "\n--- Modelo Original Após o Clone ---"
+    "\n--- Modelo Após Cópia Profunda ---"
 );
 
 checkupCardio.ExibirResumo();
+
+// O modelo original continua com apenas dois exames.
+
+// ==================================================
+// TESTE DA INTERFACE ICloneable
+// ==================================================
+
+Console.WriteLine(
+    "\n--- Teste da Interface ICloneable ---"
+);
+
+// O método Clone() retorna object.
+// Por isso, é necessário fazer o cast para PacoteExame.
+var cloneICloneable =
+    (PacoteExame)checkupCardio.Clone();
+
+cloneICloneable.NomePaciente =
+    "Paciente ICloneable";
+
+cloneICloneable.AdicionarProcedimento(
+    new Procedimento(
+        "Exame de Sangue",
+        80.00m
+    )
+);
+
+cloneICloneable.ExibirResumo();
+
+Console.WriteLine(
+    "\n--- Modelo Após Teste do ICloneable ---"
+);
+
+checkupCardio.ExibirResumo();
+
+// O modelo original não recebe o Exame de Sangue.
+
+// ==================================================
+// TESTE DA INTERFACE GENÉRICA IPrototipo<T>
+// ==================================================
+
+Console.WriteLine(
+    "\n--- Teste da Interface Genérica ---"
+);
+
+// O método Clonar() da interface genérica
+// já retorna PacoteExame.
+// Portanto, não precisamos fazer cast.
+PacoteExame cloneGenerico =
+    checkupCardio.Clonar();
+
+cloneGenerico.NomePaciente =
+    "Paciente Genérico";
+
+cloneGenerico.AdicionarProcedimento(
+    new Procedimento(
+        "Ultrassonografia",
+        200.00m
+    )
+);
+
+cloneGenerico.ExibirResumo();
+
+Console.WriteLine(
+    "\n--- Modelo Após Teste da Interface Genérica ---"
+);
+
+checkupCardio.ExibirResumo();
+
+// O modelo original continua intacto.
 
 // ==================================================
 // TESTE DA CÓPIA SUPERFICIAL
 // ==================================================
 
 Console.WriteLine(
-    "\n--- Cópia Superficial ---"
+    "\n--- Teste da Cópia Superficial ---"
 );
 
 var atendimentoAna =
@@ -211,14 +267,16 @@ atendimentoAna.AdicionarProcedimento(
 );
 
 Console.WriteLine(
-    "\nAtendimento da Ana:"
+    "\n--- Atendimento da Ana ---"
 );
 
 atendimentoAna.ExibirResumo();
 
-// O modelo original também será alterado.
 Console.WriteLine(
-    "\nModelo original após cópia superficial:"
+    "\n--- Modelo Após Cópia Superficial ---"
 );
 
 checkupCardio.ExibirResumo();
+
+// O exame Glicemia em Jejum também aparecerá no modelo original,
+// porque a cópia superficial utiliza a mesma lista.

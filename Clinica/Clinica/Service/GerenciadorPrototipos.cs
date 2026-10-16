@@ -23,6 +23,7 @@ namespace Clinica.Service
                 chave,
                 out PacoteExame? prototipo))
             {
+                // Usa a interface genérica.
                 return prototipo.Clonar();
             }
 

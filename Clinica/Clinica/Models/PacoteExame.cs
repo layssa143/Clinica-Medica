@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Clinica.Interfaces;
 
 namespace Clinica.Models
 {
-    public class PacoteExame
+    public class PacoteExame :
+        ICloneable,
+        IPrototipo<PacoteExame>
     {
         public string NomePacote { get; set; }
 
@@ -29,24 +32,23 @@ namespace Clinica.Models
             Procedimentos.Add(procedimento);
         }
 
-        // CÓPIA PROFUNDA
-        public PacoteExame Clonar()
+        // ICloneable + MemberwiseClone.
+        // A lista ainda precisa ser recriada manualmente.
+        public object Clone()
         {
-            // Cria um novo pacote na memória.
             PacoteExame pacoteClonado =
-                new PacoteExame(
-                    NomePacote,
-                    OrientacoesJejum
-                );
+                (PacoteExame)MemberwiseClone();
 
-            pacoteClonado.NomePaciente = NomePaciente;
+            // Cria uma nova lista.
+            pacoteClonado.Procedimentos =
+                new List<Procedimento>();
 
-            // Cria novos procedimentos para o novo pacote.
+            // Clona cada procedimento individualmente.
             foreach (Procedimento procedimento
                      in Procedimentos)
             {
                 Procedimento procedimentoClonado =
-                    procedimento.Clonar();
+                    (Procedimento)procedimento.Clone();
 
                 pacoteClonado.Procedimentos.Add(
                     procedimentoClonado
@@ -56,7 +58,14 @@ namespace Clinica.Models
             return pacoteClonado;
         }
 
-        // CÓPIA SUPERFICIAL
+        // Interface genérica.
+        // Não é necessário fazer cast no código que chamar esse método.
+        public PacoteExame Clonar()
+        {
+            return (PacoteExame)Clone();
+        }
+
+        // Mantém a demonstração de cópia superficial.
         public PacoteExame ClonarSuperficial()
         {
             PacoteExame pacoteClonado =
@@ -67,9 +76,9 @@ namespace Clinica.Models
 
             pacoteClonado.NomePaciente = NomePaciente;
 
-            // Atenção:
-            // Aqui a mesma lista é reutilizada.
-            pacoteClonado.Procedimentos = Procedimentos;
+            // A mesma lista é reutilizada.
+            pacoteClonado.Procedimentos =
+                Procedimentos;
 
             return pacoteClonado;
         }
